@@ -1,0 +1,198 @@
+﻿@using ETicketsSystem.Data.Enums
+@model List<Movie>
+
+
+<!-- Hero -->
+<header class="bg-danger text-white text-center py-5 mb-4 container-fluid px-0">
+    <h1 class="fw-light">Welcome to Our World</h1>
+    <p class="lead">Book your favorite movies now</p>
+</header>
+
+<!-- Filters -->
+<div class="container my-4">
+    <form>
+        <div class="row g-3 align-items-end">
+
+            <!-- Filter by Category -->
+            <div class="col-md-3">
+                <select class="form-select" id="Category" name="CategoryId" >
+                    <option value="">-- Select Category --</option>
+
+                    @foreach (var item in ViewBag.Categories as List<Category>)
+                    {
+                        @if (item.Id == ViewBag.CategoryId)
+                        {
+                            <option value="@item.Id" selected>@item.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                   
+                   
+                </select>
+            </div>
+
+            <!-- Filter by Status -->
+            <div class="col-md-3">
+                <select class="form-select" id="Status" name="Status" value="@ViewBag.Status">
+                    <option value="">-- Select Status --</option>
+                    @foreach (var item in ViewBag.Statuses as List<MovieStatus>)
+                    {
+                        @if (item == ViewBag.status)
+                        {
+                            <option value="@item" selected>@item</option>
+                        }
+                        else
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Filter by Price -->
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="Price" name="MaxPrice" value="@ViewBag.MaxPrice" placeholder="Enter Max price" />
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-md-3 d-flex">
+                <button type="submit" class="btn btn-danger me-2 w-100">Filter</button>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<!-- Cards -->
+<div class="container mb-5">
+    <div class="row">
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <!-- Card -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm mb-4">
+                        <div class="row g-0">
+                            
+                            <div class="col-md-5">
+                                <img src="~/images/movies/@item.ImgUrl" class="img-fluid rounded-start" alt="Movie">
+                            </div>
+
+                            
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.Name</h5>
+
+                                    <p>
+                                        <span class="badge bg-danger">Price: 
+                                            @item.Price.ToString("c")
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        <span class="badge bg-secondary">Category: 
+                                            @item.Category.Name
+                                        </span>
+                                    </p>
+
+                                    <p class="card-text">
+                                        @{
+                                            var desc = item.Description ?? "";
+                                            if (desc.Length > 100)
+                                            {
+                                                desc = desc.Substring(0, 100) + "...";
+                                            }
+                                        }
+                                        @desc
+                                    </p>
+
+                                    <!-- Movie status -->
+                                    @if (item.MovieStatus == MovieStatus.Upcoming)
+                                    {
+                                        <p class="card-text text-primary">@item.MovieStatus</p>
+                                    }
+                                    else if (item.MovieStatus == MovieStatus.Available)
+                                    {
+                                        <p class="card-text text-success">@item.MovieStatus</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="card-text text-danger">@item.MovieStatus</p>
+                                    }
+
+                                    <!-- Buttons -->
+                                    <div class="d-flex gap-2 mt-3">
+                                        <a href="#" class="btn btn-danger w-50">Book Now</a>
+                                        <a href="/User/Home/Details/@item.Id" class="btn btn-outline-secondary w-50">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+        }
+        else
+
+        {
+            <div class="col-12">
+                <div class="d-flex justify-content-center align-items-center" style="height:300px;">
+                    <p class="text-danger fw-bold fs-3 m-0">No Movies Available</p>
+                </div>
+            </div>
+        }
+
+        
+
+        
+    </div>
+</div>
+
+
+<!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <!-- Previous -->
+            <li class="page-item">
+                <a class="page-link text-danger" href="/?page=@(ViewBag.CurrentPage-1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+        
+        <!-- Page Numbers -->
+        @for(int i=1; i <= ViewBag.TotalNumOfPages; i++)
+        {
+            if (i == ViewBag.CurrentPage)
+            {
+                 <li class="page-item"><a class="page-link bg-danger border-danger text-white" href="/?CategoryId=@ViewBag.CategoryId&Status=@ViewBag.Statuses&MaxPrice=@ViewBag.MaxPrice&page=@i">@i</a></li>
+
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link text-danger" href="/?CategoryId=@ViewBag.CategoryId&Status=@ViewBag.Statuses&MaxPrice=@ViewBag.MaxPrice&page=@i">@i</a></li>
+            }
+        }
+        
+        @if (ViewBag.CurrentPage != ViewBag.TotalNumOfPages && Model.Any())
+        {
+           <!-- Next -->
+            <li class="page-item">
+                <a class="page-link text-danger" href="/?page=@(ViewBag.CurrentPage+1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li> 
+        }
+        
+    </ul>
+</nav>
+

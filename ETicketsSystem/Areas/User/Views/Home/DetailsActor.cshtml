@@ -1,0 +1,115 @@
+﻿@using ETicketsSystem.Data.Enums
+@model Actor
+
+<div class="container my-5">
+    <div class="row">
+        
+        <div class="col-md-4 text-center">
+            <img src="~/images/cast/@Model.ProfilePicture"
+                 alt="@Model.FirstName @Model.LastName"
+                 class="img-fluid rounded-circle shadow-sm mb-3"
+                 style="width:200px; height:200px; object-fit:cover;" />
+        </div>
+
+        
+        <div class="col-md-8">
+            <h2 class="text-danger mb-4">@Model.FirstName @Model.LastName</h2>
+
+            
+            <div class="mb-3">
+                <h5 class="text-danger border-bottom pb-1">Bio</h5>
+                <p class="text-muted">@Model.Bio</p>
+            </div>
+
+            
+            <div class="mb-3">
+                <h5 class="text-danger border-bottom pb-1">News</h5>
+                <p class="text-muted">@Model.News</p>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="mt-5">
+        <h3 class="text-danger border-bottom pb-2 mb-4">Movies</h3>
+
+        <div class="row">
+            @if(Model.Movies is not null)
+            {
+                @foreach (var item in Model.Movies)
+                {
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="row g-0">
+
+                                <div class="col-md-5">
+                                    <img src="~/images/movies/@item.ImgUrl"
+                                         class="img-fluid h-100"
+                                         style="object-fit:cover;"
+                                         alt="@item.Name">
+                                </div>
+
+
+                                <div class="col-md-7">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">@item.Name</h5>
+
+                                        <p>
+                                            <span class="badge bg-danger">Price: @item.Price.ToString("c")</span>
+                                        </p>
+                                        <p>
+                                            <span class="badge bg-secondary">Category: @item.Category.Name</span>
+                                        </p>
+
+                                        <p class="card-text flex-grow-1">
+                                            @{
+                                                var desc = item.Description ?? "";
+                                                if (desc.Length > 80)
+                                                {
+                                                    desc = desc.Substring(0, 80) + "...";
+                                                }
+                                            }
+                                            @desc
+                                        </p>
+
+                                        <!-- Movie status -->
+                                        @if (item.MovieStatus == MovieStatus.Upcoming)
+                                        {
+                                            <p class="card-text text-primary">@item.MovieStatus</p>
+                                        }
+                                        else if (item.MovieStatus == MovieStatus.Available)
+                                        {
+                                            <p class="card-text text-success">@item.MovieStatus</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text text-danger">@item.MovieStatus</p>
+                                        }
+
+                                        <!-- Buttons -->
+                                        <div class="d-flex gap-2 mt-3">
+                                            <a href="#" class="btn btn-danger btn-sm w-50">Book</a>
+                                            <a href="/User/Home/Details/@item.Id" class="btn btn-outline-secondary btn-sm w-50">Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            }
+            else
+
+                       
+                {
+                <div class="col-12">
+                    <div class="d-flex justify-content-center align-items-center" style="height:300px;">
+                        <p class="text-danger fw-bold fs-3 m-0">No Movies Available For This Actor</p>
+                    </div>
+                </div>
+                }
+
+            </div>
+    </div>
+</div>

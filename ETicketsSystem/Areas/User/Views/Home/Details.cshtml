@@ -1,0 +1,73 @@
+﻿@using ETicketsSystem.Data.Enums
+@model Movie
+<div class="container my-5">
+    <div class="row g-2">
+       
+        <div class="col-md-4 d-flex justify-content-center">
+            <img src="~/images/movies/@Model.ImgUrl"
+                 class="img-fluid rounded shadow"
+                 alt=""
+                 style="max-height:500px; width:auto;" />
+        </div>
+
+        
+        <div class="col-md-8">
+            <h2 class="text-danger">@Model.Name</h2>
+            <p><strong>Category:</strong> @Model.Category.Name</p>
+            @if (Model.MovieStatus == MovieStatus.Upcoming)
+            {
+                <p> <span class="badge bg-primary">@Model.MovieStatus</span></p>
+            }
+            else if (Model.MovieStatus == MovieStatus.Available)
+            {
+                <p> <span class="badge bg-success">@Model.MovieStatus</span></p>
+            }
+            else
+            {
+                <p> <span class="badge bg-danger">@Model.MovieStatus</span></p>
+            }
+            
+            <p><strong>Price:</strong> @Model.Price.ToString("c")</p>
+            <p><strong>Start Date:</strong> @Model.StartDate.ToString("dd MMM yyyy")</p>
+            <p><strong>End Date:</strong> @Model.EndDate.ToString("dd MMM yyyy")</p>
+            <p>@Model.Description</p>
+
+            
+            <div class="mt-3">
+                <h3 class="mb-3">Actors</h3>
+                <div class="d-flex flex-wrap gap-2">
+                    @if (Model.Actors != null && Model.Actors.Any())
+                    {
+                        @foreach (var actor in Model.Actors)
+                        {
+                            <div class="text-center">
+                                <a href="/User/Home/DetailsActor/@actor.Id">
+                                <img src="~/images/cast/@actor.ProfilePicture"
+                                     class="rounded-circle shadow-sm mb-1"
+                                     alt="@actor.FirstName"
+                                     style="height:80px; width:80px; object-fit:cover;" />
+                                <p class="fw-bold small mb-0">@actor.FirstName @actor.LastName</p>
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No actors found for this movie.</p>
+                    }
+                </div>
+            </div>
+
+            
+            <div class="text-center mt-4">
+                <a href="#" class="btn btn-danger btn-md px-4">
+                    Book Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
