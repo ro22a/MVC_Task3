@@ -1,0 +1,160 @@
+﻿@using ETicketsSystem.Data.Enums
+@model List<Movie>
+
+@section Scripts
+ {
+     <partial name="_NotificationPartial">
+ }
+
+<div class="container-fluid px-4 mt-4">
+    <h2 class="mb-3">Movies Management</h2>
+
+
+    <div class="mb-4">
+         <a href="/Admin/Movie/Create" class="btn btn-success btn-md px-4">
+                    Add Movie
+         </a>
+    </div>
+
+
+    <table class="table table-striped table-bordered w-100">
+
+        <thead class="table-danger">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category </th>
+                <th>Cinema </th>
+                <th>Movie Status </th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.Category.Name</td>
+                    <td>@item.Cinema.Name</td>
+
+                    @if (item.MovieStatus == MovieStatus.Upcoming)
+                    {
+                        <td> <span class="badge bg-primary">@item.MovieStatus</span></td>
+                    }
+                    else if (item.MovieStatus == MovieStatus.Available)
+                    {
+                        <td> <span class="badge bg-success">@item.MovieStatus</span></td>
+                    }
+                    else
+                    {
+                        <td> <span class="badge bg-danger">@item.MovieStatus</span></td>
+                    }
+
+
+                    @if (item.Description is not null && item.Description.Length >= 50)
+                        {
+                        <td>
+                            @item.Description.Substring(0,50)...
+                        </td>
+
+                    }
+                    else
+                    {
+                         <td>
+                           @item.Description
+                        </td>
+                    }
+
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="~/Admin/Movie/Edit/@item.Id" class="btn btn-primary btn-sm">
+                                Edit
+                            </a>
+                             <a href="javascript:void(0);" 
+                               class="btn btn-danger btn-sm" 
+                               data-bs-toggle="modal" 
+                               data-bs-target="#deleteModal" 
+                               data-id="@item.Id">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+  <!--Delete-->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this movie?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- pagination -->
+ <nav aria-label="page navigation">
+    <ul class="pagination justify-content-center">
+        @if (ViewBag.currentpage > 1)
+        {
+            <!-- previous -->
+            <li class="page-item">
+                <a class="page-link text-danger" href="/admin/movie/index/?page=@(ViewBag.currentpage-1)" aria-label="previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+        
+        <!-- page numbers -->
+        @for(int i=1; i <= ViewBag.totalnumofpages; i++)
+        {
+            if (i == ViewBag.currentpage)
+            {
+                 <li class="page-item"><a class="page-link bg-danger border-danger text-white" href="/admin/movie/index/?page=@i">@i</a></li>
+
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link text-danger" href="/admin/movie/index/?page=@i">@i</a></li>
+            }
+        }
+        
+        @if (ViewBag.currentpage != ViewBag.totalnumofpages && Model.Any())
+        {
+           <!-- next -->
+            <li class="page-item">
+                <a class="page-link text-danger" href="/admin/movie/index/?page=@(ViewBag.currentpage+1)" aria-label="next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li> 
+        }
+        
+    </ul>
+ </nav>
+</div> 
+<script>
+   
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; 
+        const categoryId = button.getAttribute('data-id'); 
+
+     
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        confirmBtn.href = `/Admin/Movie/Delete/${categoryId}`;
+    });
+</script>

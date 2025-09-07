@@ -26,7 +26,7 @@ namespace ETicketsSystem.Areas.User.Controllers
             //Filters
             if(MaxPrice is not null)
             {
-                movies = movies.Where(e => e.Price <= MaxPrice);
+                movies = movies.Where(e => e.Price>=MaxPrice);
                 ViewBag.MaxPrice = MaxPrice;
             }
 
@@ -58,7 +58,7 @@ namespace ETicketsSystem.Areas.User.Controllers
 
 		public IActionResult Details(int id)
 		{
-			var movie = _context.Movies.Include(e => e.Category).Include(m => m.Actors).FirstOrDefault(m => m.Id == id);
+			var movie = _context.Movies.Include(e => e.Category).Include(e=>e.Cinema).Include(m => m.Actors).FirstOrDefault(m => m.Id == id);
 
 			if (movie == null)
 				return NotFound();

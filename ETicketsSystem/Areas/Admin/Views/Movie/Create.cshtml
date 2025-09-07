@@ -1,0 +1,99 @@
+﻿@using ETicketsSystem.ViewModels
+@model CategoryWithCinemaVM
+
+<h2 class="mb-4">Add New Movie</h2>
+
+<form method="post" class="p-4 shadow rounded bg-light" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="movieName" class="form-label">Movie Name</label>
+        <input asp-for="@Model.Movie.Name" class="form-control" placeholder="Enter movie name">
+        <span class="text-danger" asp-validation-for="@Model.Movie.Name"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input asp-for="@Model.Movie.Price" class="form-control" placeholder="">
+        <span class="text-danger" asp-validation-for="@Model.Movie.Price"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="startdate" class="form-label">Start Date</label>
+        <input asp-for="@Model.Movie.StartDate" class="form-control" placeholder="">
+        <span class="text-danger" asp-validation-for="@Model.Movie.StartDate"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="enddate" class="form-label">End Date</label>
+        <input asp-for="@Model.Movie.EndDate" class="form-control" placeholder="">
+        <span class="text-danger" asp-validation-for="@Model.Movie.EndDate"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="ImgUrl" class="form-label">Img</label>
+        <input id="ImgUrl" type="file" name="ImgUrl" class="form-control" accept="image/*" onchange="previewImage(event)">
+    </div>
+
+    <div style="margin-top:10px;">
+        <img id="imgPreview" src="" alt="imgPreview"
+             style="max-width: 120px; display: none; border: 1px solid #ccc; padding: 4px;" />
+    </div>
+
+
+
+    <div class="mb-3">
+        <label asp-for="Movie.CategoryId" class="form-label"></label>
+        <select asp-for="Movie.CategoryId" class="form-select">
+            <option value="">-- Select Category --</option>
+            @foreach (var item in Model.Categories)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Movie.CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Movie.CinemaId" class="form-label"></label>
+        <select asp-for="Movie.CinemaId" class="form-select">
+            <option value="">-- Select Cinema --</option>
+            @foreach (var item in Model.Cinemas)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Movie.CinemaId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea asp-for="Movie.Description" class="form-control"></textarea>
+        <span asp-validation-for="Movie.Description" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger">Add Movie</button>
+
+    </div>
+</form>
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("imgPreview");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            }
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "";
+            preview.style.display = "none";
+        }
+    }
+</script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial">
+}
+
